@@ -4,8 +4,8 @@ var async = require("async");
 var join = require("path").join;
 var assert = require("chai").assert;
 var puffsrpc = require("puffsrpc");
-var geth = require("../");
-geth.debug = false;
+var gpuffs = require("../");
+gpuffs.debug = false;
 
 var SYMLINK = join(process.env.HOME, "ethlink");
 var COINBASE = {
@@ -184,7 +184,7 @@ var PROTOCOL_VERSION = "0x3f";
 
 function runtests(options) {
 
-    describe("ethrpc commands", function () {
+    describe("puffsrpc commands", function () {
 
         var requests = 0;
         var network_id = (options.flags) ? options.flags.networkid : options.networkid;
@@ -192,17 +192,17 @@ function runtests(options) {
 
         before(function (done) {
             this.timeout(TIMEOUT);
-            geth.start(options, function (err, spawned) {
-                if (err) return geth.stop(function () { done(err); });
-                if (!spawned) return geth.stop(function () { done(new Error("where's the geth?")); });
-                ethrpc.ipcpath = join(geth.datadir, "geth.ipc");
+            gpuffs.start(options, function (err, spawned) {
+                if (err) return gpuffs.stop(function () { done(err); });
+                if (!spawned) return gpuffs.stop(function () { done(new Error("where's the gpuffs?")); });
+                puffsrpc.ipcpath = join(gpuffs.datadir, "gpuffs.ipc");
                 done();
             });
         });
 
         after(function (done) {
             this.timeout(TIMEOUT);
-            geth.stop(done);
+            gpuffs.stop(done);
         });
 
         describe("broadcast", function () {
@@ -210,7 +210,7 @@ function runtests(options) {
             var test = function (t) {
                 it(JSON.stringify(t.command) + " -> " + t.expected, function (done) {
                     this.timeout(TIMEOUT);
-                    ethrpc.broadcast(t.command, function (res) {
+                    puffsrpc.broadcast(t.command, function (res) {
                         if (res.error) return done(res);
                         assert.strictEqual(res, t.expected);
                         done();
@@ -244,7 +244,7 @@ function runtests(options) {
             var test = function (t) {
                 it(t.node + " -> " + t.listening, function (done) {
                     this.timeout(TIMEOUT);
-                    ethrpc.listening(function (listening) {
+                    puffsrpc.listening(function (listening) {
                         assert.strictEqual(listening, t.listening);
                         done();
                     });
@@ -260,7 +260,7 @@ function runtests(options) {
             var test = function (t) {
                 it(t.node + " -> " + t.version, function (done) {
                     this.timeout(TIMEOUT);
-                    ethrpc.version(function (version) {
+                    puffsrpc.version(function (version) {
                         if (version.error) return done(version);
                         assert.strictEqual(version, t.version);
                         done();
@@ -275,7 +275,7 @@ function runtests(options) {
         describe("Ethereum bindings", function () {
 
             it("eth('protocolVersion')", function (done) {
-                ethrpc.eth("protocolVersion", null, function (res) {
+                puffsrpc.eth("protocolVersion", null, function (res) {
                     if (res.error) return done(res);
                     assert.strictEqual(res, PROTOCOL_VERSION);
                     done();
@@ -283,7 +283,7 @@ function runtests(options) {
             });
 
             it("getGasPrice", function (done) {
-                ethrpc.getGasPrice(function (res) {
+                puffsrpc.getGasPrice(function (res) {
                     if (res.error) return done(res);
                     assert.isAbove(parseInt(res), 0);
                     done();
@@ -293,7 +293,7 @@ function runtests(options) {
             if (!process.env.CONTINUOUS_INTEGRATION) {
 
                 it("blockNumber", function (done) {
-                    ethrpc.blockNumber(function (res) {
+                    puffsrpc.blockNumber(function (res) {
                         if (res.error) return done(res);
                         assert.isAtLeast(parseInt(res), 0);
                         done();
@@ -301,26 +301,26 @@ function runtests(options) {
                 });
 
                 it("balance/getBalance", function (done) {
-                    ethrpc.balance(coinbase, function (res) {
+                    puffsrpc.balance(coinbase, function (res) {
                         if (res.error) return done(res);
                         assert.isAtLeast(parseInt(res), 0);
-                        ethrpc.getBalance(coinbase, function (r) {
+                        puffsrpc.getBalance(coinbase, function (r) {
                             if (r.error) return done(r);
                             assert.isAtLeast(parseInt(r), 0);
                             assert.strictEqual(r, res);
-                            ethrpc.balance(coinbase, "latest", function (r) {
+                            puffsrpc.balance(coinbase, "latest", function (r) {
                                 if (r.error) return done(r);
                                 assert.isAtLeast(parseInt(r), 0);
                                 assert.strictEqual(r, res);
-                                ethrpc.getBalance(coinbase, "latest", function (r) {
+                                puffsrpc.getBalance(coinbase, "latest", function (r) {
                                     if (r.error) return done(r);
                                     assert.isAtLeast(parseInt(r), 0);
                                     assert.strictEqual(r, res);
-                                    ethrpc.balance(coinbase, null, function (r) {
+                                    puffsrpc.balance(coinbase, null, function (r) {
                                         if (r.error) return done(r);
                                         assert.isAtLeast(parseInt(r), 0);
                                         assert.strictEqual(r, res);
-                                        ethrpc.getBalance(coinbase, null, function (r) {
+                                        puffsrpc.getBalance(coinbase, null, function (r) {
                                             if (r.error) return done(r);
                                             assert.isAtLeast(parseInt(r), 0);
                                             assert.strictEqual(r, res);
@@ -337,7 +337,7 @@ function runtests(options) {
                     ethrpc.txCount(coinbase, function (res) {
                         if (res.error) return done(res);
                         assert(parseInt(res) >= 0);
-                        ethrpc.pendingTxCount(coinbase, function (res) {
+                        puffsrpc.pendingTxCount(coinbase, function (res) {
                             if (res.error) return done(res);
                             assert(parseInt(res) >= 0);
                             done();
@@ -348,7 +348,7 @@ function runtests(options) {
             }
 
             it("peerCount", function (done) {
-                ethrpc.peerCount(function (res) {
+                puffsrpc.peerCount(function (res) {
                     if (res.error) return done(res);
                     assert(parseInt(res) >= 0);
                     done();
@@ -356,7 +356,7 @@ function runtests(options) {
             });
 
             it("hashrate", function (done) {
-                ethrpc.hashrate(function (res) {
+                puffsrpc.hashrate(function (res) {
                     if (res.error) return done(res);
                     assert(parseInt(res) >= 0);
                     done();
@@ -364,7 +364,7 @@ function runtests(options) {
             });
 
             it("mining", function (done) {
-                ethrpc.mining(function (res) {
+                puffsrpc.mining(function (res) {
                     if (res.error) return done(res);
                     assert.isBoolean(res);
                     done();
@@ -372,7 +372,7 @@ function runtests(options) {
             });
 
             it("clientVersion", function (done) {
-                ethrpc.clientVersion(function (res) {
+                puffsrpc.clientVersion(function (res) {
                     if (res.error) return done(res);
                     assert.isString(res);
                     assert.strictEqual(res.split('/')[0], "Geth");
@@ -388,27 +388,27 @@ function runtests(options) {
 
             var test = function (t) {
                 var label = (t.label) ? "'" + t.label + "'" : "";
-                it("geth.stderr(" + label + ")", function (done) {
+                it("gpuffs.stderr(" + label + ")", function (done) {
                     this.timeout(TIMEOUT);
-                    geth.stop(function () {
-                        geth.start(options, {
+                    gpuffs.stop(function () {
+                        gpuffs.start(options, {
                             stderr: function (data) {
-                                if (geth.debug) process.stdout.write(data);
+                                if (gpuffs.debug) process.stdout.write(data);
                                 if (data.toString().indexOf("Starting P2P networking") > -1) {
-                                    geth.trigger(null, geth.proc);
+                                    gpuffs.trigger(null, gpuffs.proc);
                                 }
                             }
                         }, function (err, spawned) {
                             if (err) {
-                                return geth.stop(function () { done(err); });
+                                return gpuffs.stop(function () { done(err); });
                             }
                             if (!spawned) {
-                                return geth.stop(function () { done(new Error("where's the geth?")); });
+                                return gpuffs.stop(function () { done(new Error("where's the gpuffs?")); });
                             }
-                            geth.stderr(t.label, function (data) {
-                                if (geth.debug) process.stdout.write(data);
+                            gpuffs.stderr(t.label, function (data) {
+                                if (gpuffs.debug) process.stdout.write(data);
                                 if (data.toString().indexOf("HTTP endpoint opened") > -1) {
-                                    geth.stop(done);
+                                    gpuffs.stop(done);
                                 }
                             });
                         });
