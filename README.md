@@ -49,7 +49,7 @@ The callback for `start` fires after gpuffs has successfully started.  Specifica
     },
     stderr: function (data) {
         if (data.toString().indexOf("Protocol Versions") > -1) {
-            geth.trigger(null, gpuffs.proc);
+            gpuffs.trigger(null, gpuffs.proc);
         }
     },
     close: function (code) {
