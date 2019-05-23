@@ -3,7 +3,7 @@
 var async = require("async");
 var join = require("path").join;
 var assert = require("chai").assert;
-var ethrpc = require("ethrpc");
+var puffsrpc = require("puffsrpc");
 var geth = require("../");
 geth.debug = false;
 
@@ -16,19 +16,19 @@ var BOOTNODES = [
     "enode://"+
         "d4f4e7fd3954718562544dbf322c0c84d2c87f154dd66a39ea0787a6f74930c4"+
         "2f5d13ba2cfef481b66a6f002bc3915f94964f67251524696a448ba40d1e2b12"+
-        "@45.33.59.27:30303",
+        "@45.33.59.27:31313",
     "enode://"+
         "a9f34ea3de79cd75ba49c37603d28a7c494f32604b4ad6e3415b4c6020ff5bf3"+
         "8f9772d69362c024355245fe839dd397ff9ec04db70b3258d92259323cb792ae"+
-        "@69.164.196.239:30303",
+        "@69.164.196.239:31313",
     "enode://"+
         "4f23a991ea8739bcc5ab52625407fcfddb03ac31a36141184cf9072ff8bf3999"+
         "54bb94ec47e1f653a0b0fea8d88a67fa3147dbe5c56067f39e0bd5125ae0d1f1"+
-        "@139.162.5.153:30303",
+        "@139.162.5.153:31313",
     "enode://"+
         "bafc7bbaebf6452dcbf9522a2af30f586b38c72c84922616eacad686ab6aaed2"+
         "b50f808b3f91dba6a546474fe96b5bff97d51c9b062b4a2e8bc9339d9bb8e186"+
-        "@106.184.4.123:30303"
+        "@106.184.4.123:31313"
 ];
 
 var options = {
