@@ -272,7 +272,7 @@ function runtests(options) {
 
         });
 
-        describe("Ethereum bindings", function () {
+        describe("PUFFScoin bindings", function () {
 
             it("eth('protocolVersion')", function (done) {
                 puffsrpc.eth("protocolVersion", null, function (res) {
