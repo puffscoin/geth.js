@@ -1,5 +1,5 @@
 /**
- * Start and stop geth from Node.js.
+ * Start and stop gpuffs from Node.js.
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -43,11 +43,11 @@ module.exports = {
     persist: false,
 
     configure: function (options) {
-        this.bin = options.geth_bin || "geth";
+        this.bin = options.gpuffs_bin || "gpuffs";
         this.persist = options.persist || false;
         var f = copy(options.flags || options);
         this.network = f.networkid;
-        f.datadir = f.datadir || join(process.env.HOME, ".ethereum-" + f.networkid);
+        f.datadir = f.datadir || join(process.env.HOME, ".puffscoin-" + f.networkid);
         if (options.symlink) {
             if (fs.existsSync(options.symlink)) fs.unlinkSync(options.symlink);
             fs.symlinkSync(f.datadir, options.symlink);
@@ -161,7 +161,7 @@ module.exports = {
             if (!listeners.close) {
                 listeners.close = function (code) {
                     if (code !== 2 && code !== 0) {
-                        self.trigger(new Error("geth closed with code " + code));
+                        self.trigger(new Error("gpuffs closed with code " + code));
                     }
                 };
             }
