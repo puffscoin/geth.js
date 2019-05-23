@@ -12,8 +12,8 @@
     "url": "git+https://github.com/puffscoin/gpuffs.js.git"
   },
   "keywords": [
-    "geth",
-    "ethereum",
+    "gpuffs",
+    "puffscoin",
     "spawn",
     "child process"
   ],
