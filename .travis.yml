@@ -20,7 +20,7 @@ before_install:
   - yes | gpuffs --datadir ~/.puffscoin-10101 &
   - sleep 5
   - killall gpuffs
-  - yes | geth --datadir ~/.puffscoin-7 &
+  - yes | gpuffs --datadir ~/.puffscoin-7 &
   - sleep 5
   - killall gpuffs
   - npm install -g npm
